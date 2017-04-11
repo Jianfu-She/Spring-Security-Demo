@@ -1,0 +1,82 @@
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Login</title>
+</head>
+<body>
+    Login Page
+
+    <form>
+        <p>
+            <label>username</label>
+            <input id="username" type="text" name="username" />
+        </p>
+        <p>
+            <label>password</label>
+            <input id="password" type="password" name="password" />
+        </p>
+        <p>
+            <label>verifycode</label>
+            <input type="text" id="verifyCode" name="verifyCode" size="4" />
+            <img alt="验证码" id="verifyCodeImg" src="/verifycode" />
+            <a id="changecode" href="">看不清楚</a>
+        </p>
+        <p>
+            <input id="rememberMe" type="checkbox" name="rememberMe" /> 10天内免登陆
+        </p>
+        <input id="confirm" type="button" value="Login" />
+    </form>
+
+</body>
+
+<!--<script>-->
+    <!--window.onload=function(){-->
+        <!--var $verifyCodeImg = document.getElementById("verifyCodeImg"),-->
+            <!--$verifyCode =document.getElementById("verifyCode"),-->
+            <!--$changecode=document.getElementById("changecode");-->
+        <!--$changecode.onclick=function () {-->
+            <!--var time = new Date().getTime();-->
+            <!--document.getElementById("verifyCodeImg").src = "/verifycode?time=" + time;-->
+            <!--return false;-->
+        <!--}-->
+    <!--}-->
+
+<!--</script>-->
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+
+
+   $("#confirm").click(function() {
+
+       var username=$("#username").val();
+       var password=$("#password").val();
+       var verifyCode=$("#verifyCode").val();
+       var rememberMe=$("#rememberMe").is(':checked');
+
+       console.log({username:username,password:password,verifyCode:verifyCode,rememberMe:rememberMe});
+
+       $.post("/login",{username:username,password:password,verifyCode:verifyCode,rememberMe:rememberMe},function(res){
+           console.log(res);
+           console.log(res.code);
+           if (res.code == 1) {
+               console.log("success");
+               //window.location.assign('/');
+               //window.location="/";
+           } else if (res.code == 0) {
+               console.log("fail");
+               window.location.assign('/verifycode');
+           } else if (res.code == -1) {
+               console.log("验证码错误");
+               //window.location.assign('/verifycode');
+           }
+       });
+   });
+
+   $("#changecode").click(function () {
+       var time = new Date().getTime();
+       document.getElementById("verifyCodeImg").src = "/verifycode?time=" + time;
+       return false;
+   });
+</script>
+
+</html>
